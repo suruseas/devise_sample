@@ -1,0 +1,31 @@
+version: '3'
+services:
+  db:
+    image: postgres:14.5-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+  web:
+    build: .
+    command: ash
+    volumes:
+      - .:/app
+      - bundle_install:/usr/local/bundle
+    ports:
+      - 3000:3000
+      - 3036:3036
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+  redis:
+    image: redis:6.2.7-alpine
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+  bundle_install:
